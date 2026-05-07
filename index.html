@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroFisio IA — Planes de Tratamiento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-50: #E1F5EE;
+      --teal-100: #9FE1CB;
+      --teal-600: #0F6E56;
+      --teal-800: #085041;
+      --teal-900: #04342C;
+      --gray-50: #F8F9FA;
+      --gray-100: #F1F3F4;
+      --gray-200: #E8EAED;
+      --gray-400: #9AA0A6;
+      --gray-600: #5F6368;
+      --gray-900: #202124;
+      --white: #FFFFFF;
+      --border: rgba(0,0,0,0.12);
+      --border-strong: rgba(0,0,0,0.22);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-900);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* TOP NAV */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; }
+    .nav-logo {
+      width: 34px; height: 34px;
+      background: var(--teal-600);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo svg { width: 18px; height: 18px; fill: white; }
+    .nav-title { font-size: 16px; font-weight: 600; color: var(--gray-900); }
+    .nav-subtitle { font-size: 12px; color: var(--gray-400); margin-left: 4px; }
+    .nav-badge {
+      font-size: 11px; font-weight: 500;
+      background: var(--teal-50); color: var(--teal-600);
+      padding: 4px 12px; border-radius: 20px;
+      border: 1px solid var(--teal-100);
+    }
+
+    /* LAYOUT */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .page-intro {
+      margin-bottom: 2rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .page-intro-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: var(--teal-50);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .page-intro-icon svg { width: 18px; height: 18px; fill: var(--teal-600); }
+    .page-intro h1 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .page-intro p { font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+
+    /* CARD */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-400);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 3px; height: 14px;
+      background: var(--teal-600);
+      border-radius: 2px;
+    }
+
+    /* FORM ELEMENTS */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    .field { margin-bottom: 14px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: 5px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--gray-900);
+      background: var(--white);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--teal-600);
+      box-shadow: 0 0 0 3px rgba(15,110,86,0.1);
+    }
+    .field textarea { min-height: 78px; resize: vertical; line-height: 1.5; }
+    .field select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239AA0A6' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+
+    /* TAGS */
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .tag {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border-strong);
+      color: var(--gray-600);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .tag:hover { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+    .tag.sel { background: var(--teal-50); border-color: var(--teal-600); color: var(--teal-800); font-weight: 500; }
+
+    /* ESCALAS */
+    .escalas { display: flex; flex-wrap: wrap; gap: 7px; }
+    .escala-btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-strong);
+      color: var(--gray-600);
+      background: var(--white);
+      cursor: pointer;
+      transition: all 0.12s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .escala-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gray-400); transition: background 0.12s; }
+    .escala-btn:hover { border-color: var(--teal-600); color: var(--teal-600); }
+    .escala-btn.active { background: var(--teal-50); border-color: var(--teal-600); color: var(--teal-800); font-weight: 500; }
+    .escala-btn.active .dot { background: var(--teal-600); }
+
+    .scores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 12px; }
+    .score-field { display: none; }
+    .score-field.visible { display: block; }
+
+    /* BUTTONS */
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--teal-600);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover { background: var(--teal-800); }
+    .btn-primary:active { transform: scale(0.99); }
+    .btn-primary:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: var(--gray-600);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.12s;
+    }
+    .btn-secondary:hover { color: var(--gray-900); border-color: var(--gray-900); }
+
+    /* RESULT */
+    .result-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-top: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--gray-50);
+    }
+    .result-header-left { display: flex; align-items: center; gap: 8px; }
+    .result-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-600); }
+    .result-label { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+    .result-actions { display: flex; gap: 8px; }
+    .btn-action {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      padding: 6px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      background: var(--white);
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .btn-action:hover { border-color: var(--teal-600); color: var(--teal-600); background: var(--teal-50); }
+    .result-body {
+      padding: 1.5rem;
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--gray-900);
+      white-space: pre-wrap;
+      font-family: 'DM Sans', sans-serif;
+      max-height: 72vh;
+      overflow-y: auto;
+    }
+    .result-body strong { font-weight: 600; }
+
+    /* LOADING */
+    .loading-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-top: 1.5rem;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+    .spinner-wrap { position: relative; width: 48px; height: 48px; }
+    .spinner-bg { width: 48px; height: 48px; border-radius: 50%; border: 3px solid var(--teal-50); }
+    .spinner {
+      position: absolute; top: 0; left: 0;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: var(--teal-600);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+    .loading-sub { font-size: 12px; color: var(--gray-400); }
+
+    /* ERROR */
+    .error-card {
+      background: #FFF5F5;
+      border: 1px solid #FED7D7;
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-top: 1.5rem;
+      font-size: 13px;
+      color: #C53030;
+    }
+
+    /* PRINT */
+    @media print {
+      nav, .page-intro, .card, .btn-primary, .btn-secondary, .result-actions { display: none !important; }
+      .result-card { box-shadow: none; border: none; margin: 0; }
+      .result-body { max-height: none; overflow: visible; font-size: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      .grid2, .grid3 { grid-template-columns: 1fr; }
+      .container { padding: 1rem; }
+      nav { padding: 0 1rem; }
+      .nav-subtitle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2C9.24 2 7 4.24 7 7c0 1.57.71 2.98 1.83 3.93C6.6 12.11 5 14.36 5 17h2c0-2.76 2.24-5 5-5s5 2.24 5 5h2c0-2.64-1.6-4.89-3.83-6.07C16.29 9.98 17 8.57 17 7c0-2.76-2.24-5-5-5zm0 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg>
+    </div>
+    <span class="nav-title">NeuroFisio IA</span>
+    <span class="nav-subtitle">— Fisioterapia Neurológica</span>
+  </div>
+  <span class="nav-badge">Basado en evidencia</span>
+</nav>
+
+<div class="container">
+
+  <div class="page-intro">
+    <div class="page-intro-icon">
+      <svg viewBox="0 0 24 24"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+    </div>
+    <div>
+      <h1>Generador de planes de tratamiento neurológico</h1>
+      <p>Ingresa los hallazgos de la evaluación fisioterapéutica y el sistema generará un plan estructurado basado en evidencia científica actualizada, listo para presentar en junta clínica.</p>
+    </div>
+  </div>
+
+  <!-- DATOS BÁSICOS -->
+  <div class="card">
+    <div class="card-title">Datos del paciente</div>
+    <div class="grid3">
+      <div class="field"><label>Edad</label><input type="number" id="edad" placeholder="ej. 58" min="0" max="120"></div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="sexo">
+          <option value="">Seleccionar</option>
+          <option>Masculino</option>
+          <option>Femenino</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fase clínica</label>
+        <select id="fase">
+          <option value="">Seleccionar</option>
+          <option>Aguda (0-4 semanas)</option>
+          <option>Subaguda (1-6 meses)</option>
+          <option>Crónica (más de 6 meses)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIAGNÓSTICO -->
+  <div class="card">
+    <div class="card-title">Diagnóstico</div>
+    <div class="field">
+      <label>Diagnóstico médico — selección rápida o escribe abajo</label>
+      <div class="tags" id="dx-tags">
+        <span class="tag" data-field="dx_medico">ACV isquémico</span>
+        <span class="tag" data-field="dx_medico">ACV hemorrágico</span>
+        <span class="tag" data-field="dx_medico">TBI moderado</span>
+        <span class="tag" data-field="dx_medico">TBI severo</span>
+        <span class="tag" data-field="dx_medico">Parkinson</span>
+        <span class="tag" data-field="dx_medico">Esclerosis múltiple</span>
+        <span class="tag" data-field="dx_medico">Guillain-Barré</span>
+        <span class="tag" data-field="dx_medico">Parálisis cerebral</span>
+        <span class="tag" data-field="dx_medico">Mielomeningocele</span>
+        <span class="tag" data-field="dx_medico">Lesión medular</span>
+      </div>
+      <input type="text" id="dx_medico" placeholder="O escribe el diagnóstico médico...">
+    </div>
+    <div class="field">
+      <label>Diagnóstico fisioterapéutico</label>
+      <input type="text" id="dx_fisio" placeholder="ej. Alteración del control postural y marcha por hemiparesia espástica izquierda">
+    </div>
+    <div class="field">
+      <label>Tiempo de evolución</label>
+      <input type="text" id="evolucion" placeholder="ej. 3 semanas post-evento, 2 meses de rehabilitación previa...">
+    </div>
+  </div>
+
+  <!-- HALLAZGOS -->
+  <div class="card">
+    <div class="card-title">Hallazgos de la evaluación</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Tono muscular</label>
+        <select id="tono">
+          <option value="">Seleccionar</option>
+          <option>Normal</option>
+          <option>Hipertonía leve (MAS 1)</option>
+          <option>Hipertonía moderada (MAS 2)</option>
+          <option>Hipertonía severa (MAS 3-4)</option>
+          <option>Hipotonía</option>
+          <option>Fluctuante</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fuerza muscular (MRC global)</label>
+        <select id="fuerza">
+          <option value="">Seleccionar</option>
+          <option>0 — Sin contracción</option>
+          <option>1 — Contracción visible sin movimiento</option>
+          <option>2 — Movimiento sin gravedad</option>
+          <option>3 — Movimiento contra gravedad</option>
+          <option>4 — Movimiento contra resistencia parcial</option>
+          <option>5 — Fuerza normal</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Control postural y equilibrio</label>
+      <div class="tags" style="margin-bottom:8px;">
+        <span class="tag" data-field="equilibrio">Equilibrio en sedente conservado</span>
+        <span class="tag" data-field="equilibrio">Equilibrio en sedente alterado</span>
+        <span class="tag" data-field="equilibrio">Bipedestación conservada</span>
+        <span class="tag" data-field="equilibrio">Bipedestación alterada</span>
+        <span class="tag" data-field="equilibrio">Sin control postural independiente</span>
+      </div>
+      <input type="text" id="equilibrio" placeholder="Descripción adicional del equilibrio...">
+    </div>
+
+    <div class="field">
+      <label>Patrón de marcha</label>
+      <div class="tags" style="margin-bottom:8px;">
+        <span class="tag" data-field="marcha">No deambula</span>
+        <span class="tag" data-field="marcha">Con asistencia máxima</span>
+        <span class="tag" data-field="marcha">Con asistencia moderada</span>
+        <span class="tag" data-field="marcha">Con ayuda técnica</span>
+        <span class="tag" data-field="marcha">Independiente con alteraciones</span>
+        <span class="tag" data-field="marcha">Deambulación funcional</span>
+      </div>
+      <input type="text" id="marcha" placeholder="Descripción del patrón de marcha (hemipléjica, espástica, atáxica...)">
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>Dolor (EVA 0-10)</label>
+        <input type="number" id="dolor" placeholder="0 = sin dolor" min="0" max="10">
+      </div>
+      <div class="field">
+        <label>Estado cognitivo</label>
+        <select id="cognicion">
+          <option value="">Seleccionar</option>
+          <option>Conservado</option>
+          <option>Alteración leve</option>
+          <option>Alteración moderada</option>
+          <option>Alteración severa</option>
+          <option>No evaluable</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Otros hallazgos relevantes</label>
+      <textarea id="otros" placeholder="Alteraciones sensitivas, visuales, comunicativas, espasticidad localizada, contracturas, alteraciones de deglución, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- ESCALAS -->
+  <div class="card">
+    <div class="card-title">Escalas clínicas aplicadas</div>
+    <div class="escalas" id="escalas-btns">
+      <button class="escala-btn" data-scale="barthel"><span class="dot"></span>Barthel</button>
+      <button class="escala-btn" data-scale="fim"><span class="dot"></span>FIM</button>
+      <button class="escala-btn" data-scale="berg"><span class="dot"></span>Berg Balance</button>
+      <button class="escala-btn" data-scale="mas"><span class="dot"></span>MAS (Ashworth)</button>
+      <button class="escala-btn" data-scale="mrc"><span class="dot"></span>MRC suma</button>
+      <button class="escala-btn" data-scale="nihss"><span class="dot"></span>NIHSS</button>
+      <button class="escala-btn" data-scale="gmfcs"><span class="dot"></span>GMFCS</button>
+      <button class="escala-btn" data-scale="fugl"><span class="dot"></span>Fugl-Meyer</button>
+      <button class="escala-btn" data-scale="tug"><span class="dot"></span>TUG (seg)</button>
+      <button class="escala-btn" data-scale="moca"><span class="dot"></span>MoCA</button>
+      <button class="escala-btn" data-scale="fac"><span class="dot"></span>FAC</button>
+      <button class="escala-btn" data-scale="wmft"><span class="dot"></span>Wolf Motor</button>
+    </div>
+    <div class="scores-grid" id="scores-container"></div>
+  </div>
+
+  <!-- CONTEXTO -->
+  <div class="card">
+    <div class="card-title">Contexto y objetivos</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Situación del paciente</label>
+        <select id="contexto">
+          <option value="">Seleccionar</option>
+          <option>Hospitalizado (UCI / sala general)</option>
+          <option>Institución de rehabilitación</option>
+          <option>Domicilio con cuidador primario</option>
+          <option>Domicilio con familia sin cuidador formal</option>
+          <option>Vive solo, sin cuidador</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Frecuencia de sesiones disponible</label>
+        <select id="frecuencia">
+          <option value="">Seleccionar</option>
+          <option>Diario (hospitalizado)</option>
+          <option>5 veces/semana (intensivo)</option>
+          <option>3 veces/semana</option>
+          <option>2 veces/semana</option>
+          <option>1 vez/semana</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Objetivos del paciente y/o familia</label>
+      <textarea id="objetivos_px" placeholder="ej. Recuperar marcha independiente, volver a trabajar, mejorar independencia en actividades de vida diaria, reducir carga del cuidador..."></textarea>
+    </div>
+    <div class="field">
+      <label>Información adicional relevante</label>
+      <textarea id="adicional" placeholder="Comorbilidades, antecedentes, barreras para la rehabilitación, contexto socioeconómico, acceso a tecnología..."></textarea>
+    </div>
+  </div>
+
+  <button class="btn-primary" id="btn-gen" onclick="generarPlan()">
+    Generar plan de tratamiento
+  </button>
+  <button class="btn-secondary" onclick="limpiarFormulario()">Limpiar formulario</button>
+
+  <div id="resultado"></div>
+
+</div>
+
+<script>
+  const scaleRanges = {
+    barthel: { label: "Índice de Barthel (0-100)", min: 0, max: 100 },
+    fim:     { label: "FIM (18-126)", min: 18, max: 126 },
+    berg:    { label: "Berg Balance Scale (0-56)", min: 0, max: 56 },
+    mas:     { label: "Modified Ashworth Scale (0-4)", min: 0, max: 4 },
+    mrc:     { label: "MRC suma (0-60)", min: 0, max: 60 },
+    nihss:   { label: "NIHSS (0-42)", min: 0, max: 42 },
+    gmfcs:   { label: "GMFCS nivel (I-V)", min: 1, max: 5 },
+    fugl:    { label: "Fugl-Meyer (0-226)", min: 0, max: 226 },
+    tug:     { label: "TUG (segundos)", min: 0, max: 300 },
+    moca:    { label: "MoCA (0-30)", min: 0, max: 30 },
+    fac:     { label: "FAC (0-5)", min: 0, max: 5 },
+    wmft:    { label: "Wolf Motor Function Test", min: 0, max: 75 }
+  };
+
+  const activeScales = new Set();
+
+  document.querySelectorAll('.escala-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s = btn.dataset.scale;
+      activeScales.has(s) ? activeScales.delete(s) : activeScales.add(s);
+      btn.classList.toggle('active');
+      renderScoreFields();
+    });
+  });
+
+  function renderScoreFields() {
+    const c = document.getElementById('scores-container');
+    c.innerHTML = '';
+    activeScales.forEach(s => {
+      const r = scaleRanges[s];
+      const div = document.createElement('div');
+      div.className = 'score-field visible field';
+      div.innerHTML = `<label>${r.label}</label><input type="number" id="score_${s}" placeholder="Puntaje" min="${r.min}" max="${r.max}">`;
+      c.appendChild(div);
+    });
+  }
+
+  // Tags de selección rápida
+  document.querySelectorAll('.tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      const field = tag.dataset.field;
+      const input = document.getElementById(field);
+      if (tag.classList.contains('sel')) {
+        tag.classList.remove('sel');
+        if (input.value === tag.textContent.trim()) input.value = '';
+      } else {
+        document.querySelectorAll(`.tag[data-field="${field}"]`).forEach(t => t.classList.remove('sel'));
+        tag.classList.add('sel');
+        input.value = tag.textContent.trim();
+      }
+    });
+  });
+
+  document.querySelectorAll('#dx-tags .tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      document.querySelectorAll('#dx-tags .tag').forEach(t => t.classList.remove('sel'));
+      tag.classList.add('sel');
+      document.getElementById('dx_medico').value = tag.textContent.trim();
+    });
+  });
+
+  function recopilarDatos() {
+    const scores = {};
+    activeScales.forEach(s => {
+      const el = document.getElementById('score_' + s);
+      if (el && el.value) scores[scaleRanges[s].label] = el.value;
+    });
+    return {
+      edad: document.getElementById('edad').value,
+      sexo: document.getElementById('sexo').value,
+      fase: document.getElementById('fase').value,
+      dx_medico: document.getElementById('dx_medico').value,
+      dx_fisio: document.getElementById('dx_fisio').value,
+      evolucion: document.getElementById('evolucion').value,
+      tono: document.getElementById('tono').value,
+      fuerza: document.getElementById('fuerza').value,
+      equilibrio: document.getElementById('equilibrio').value,
+      marcha: document.getElementById('marcha').value,
+      dolor: document.getElementById('dolor').value,
+      cognicion: document.getElementById('cognicion').value,
+      otros: document.getElementById('otros').value,
+      escalas: scores,
+      contexto: document.getElementById('contexto').value,
+      frecuencia: document.getElementById('frecuencia').value,
+      objetivos_px: document.getElementById('objetivos_px').value,
+      adicional: document.getElementById('adicional').value
+    };
+  }
+
+  function construirPrompt(d) {
+    const escalasTxt = Object.keys(d.escalas).length > 0
+      ? Object.entries(d.escalas).map(([k,v]) => `${k}: ${v}`).join(' | ')
+      : 'No especificadas';
+
+    return `Eres un asistente clínico especializado en fisioterapia neurológica. Genera un plan de tratamiento fisioterapéutico completo, estructurado y basado en evidencia científica actualizada. Usa lenguaje técnico apropiado para comunicación entre profesionales de salud en Colombia. Responde en español colombiano.
+
+DATOS DE EVALUACIÓN:
+- Edad: ${d.edad || 'No especificada'} | Sexo: ${d.sexo || 'No especificado'}
+- Fase clínica: ${d.fase || 'No especificada'}
+- Tiempo de evolución: ${d.evolucion || 'No especificado'}
+- Diagnóstico médico: ${d.dx_medico || 'No especificado'}
+- Diagnóstico fisioterapéutico: ${d.dx_fisio || 'No especificado'}
+
+HALLAZGOS CLÍNICOS:
+- Tono muscular: ${d.tono || 'No evaluado'}
+- Fuerza muscular: ${d.fuerza || 'No evaluada'}
+- Control postural/Equilibrio: ${d.equilibrio || 'No evaluado'}
+- Marcha: ${d.marcha || 'No evaluada'}
+- Dolor (EVA): ${d.dolor !== '' ? d.dolor + '/10' : 'No reportado'}
+- Estado cognitivo: ${d.cognicion || 'No evaluado'}
+- Otros hallazgos: ${d.otros || 'Ninguno adicional'}
+
+ESCALAS APLICADAS: ${escalasTxt}
+
+CONTEXTO:
+- Situación del paciente: ${d.contexto || 'No especificada'}
+- Frecuencia de sesiones: ${d.frecuencia || 'No especificada'}
+- Objetivos del paciente/familia: ${d.objetivos_px || 'No especificados'}
+- Información adicional: ${d.adicional || 'Ninguna'}
+
+Genera el plan con EXACTAMENTE esta estructura y formato:
+
+**PLAN DE TRATAMIENTO FISIOTERAPÉUTICO NEUROLÓGICO**
+**Paciente:** [perfil breve: edad, sexo, diagnóstico]
+**Diagnóstico:** [médico + fisioterapéutico]
+**Fase clínica:** [fase actual]
+
+---
+
+**PRONÓSTICO**
+- Pronóstico funcional estimado: [descripción clara, realista y justificada]
+- Factores favorables: [lista numerada]
+- Factores limitantes: [lista numerada]
+- Tiempo estimado para objetivos principales: [rango temporal realista]
+
+---
+
+**OBJETIVOS TERAPÉUTICOS**
+Corto plazo (1-4 semanas):
+- [Objetivo SMART 1]
+- [Objetivo SMART 2]
+- [Objetivo SMART 3]
+
+Mediano plazo (1-3 meses):
+- [Objetivo SMART 1]
+- [Objetivo SMART 2]
+- [Objetivo SMART 3]
+
+Largo plazo (3-6+ meses):
+- [Objetivo SMART 1]
+- [Objetivo SMART 2]
+- [Objetivo SMART 3]
+
+---
+
+**PLAN DE INTERVENCIÓN**
+
+Fase 1 – [nombre descriptivo] (semanas 1-X):
+Técnicas e intervenciones:
+- [Técnica 1] — justificación: [evidencia que la respalda]
+- [Técnica 2] — justificación: [evidencia que la respalda]
+- [Técnica 3] — justificación: [evidencia que la respalda]
+Progresión: [descripción de frecuencia y criterios de progresión]
+Indicadores de progreso: [cómo medir el avance]
+
+Fase 2 – [nombre descriptivo] (semanas X-X):
+Técnicas e intervenciones:
+- [Técnica 1] — justificación: [evidencia]
+- [Técnica 2] — justificación: [evidencia]
+- [Técnica 3] — justificación: [evidencia]
+Progresión: [descripción]
+Indicadores de progreso: [métricas]
+
+Fase 3 – [nombre descriptivo] (meses X en adelante, si aplica):
+Técnicas e intervenciones:
+- [Técnica 1] — justificación: [evidencia]
+- [Técnica 2] — justificación: [evidencia]
+Progresión: [descripción]
+Indicadores de progreso: [métricas]
+
+---
+
+**CONSIDERACIONES ESPECIALES**
+- Precauciones y contraindicaciones: [lista]
+- Recomendaciones para cuidadores/familia: [si aplica]
+- Tecnología de apoyo y adaptaciones del entorno: [sugerencias concretas]
+- Criterios de derivación o interconsulta: [si aplica]
+
+---
+
+**REFERENCIAS DE EVIDENCIA**
+1. [Autor/Organización (año). Título. Fuente/Revista.]
+2. [Autor/Organización (año). Título. Fuente/Revista.]
+3. [Autor/Organización (año). Título. Fuente/Revista.]
+4. [Autor/Organización (año). Título. Fuente/Revista.]
+5. [Autor/Organización (año). Título. Fuente/Revista.]`;
+  }
+
+  async function generarPlan() {
+    const d = recopilarDatos();
+    if (!d.dx_medico && !d.dx_fisio) {
+      alert('Por favor ingresa al menos el diagnóstico médico o fisioterapéutico para continuar.');
+      return;
+    }
+
+    const btn = document.getElementById('btn-gen');
+    btn.disabled = true;
+    btn.textContent = 'Generando plan...';
+
+    document.getElementById('resultado').innerHTML = `
+      <div class="loading-card">
+        <div class="spinner-wrap">
+          <div class="spinner-bg"></div>
+          <div class="spinner"></div>
+        </div>
+        <div class="loading-title">Analizando hallazgos clínicos...</div>
+        <div class="loading-sub">Generando plan basado en evidencia científica. Esto puede tomar 15-30 segundos.</div>
+      </div>`;
+
+    try {
+      const resp = await fetch('/api/generar-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: construirPrompt(d) })
+      });
+
+      const data = await resp.json();
+
+      if (!resp.ok) throw new Error(data.error || 'Error desconocido');
+
+      const texto = data.plan || '';
+      const html = texto
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #E8EAED;margin:1rem 0;">');
+
+      document.getElementById('resultado').innerHTML = `
+        <div class="result-card">
+          <div class="result-header">
+            <div class="result-header-left">
+              <div class="result-dot"></div>
+              <span class="result-label">Plan de tratamiento generado</span>
+            </div>
+            <div class="result-actions">
+              <button class="btn-action" onclick="imprimirPlan()">Imprimir / PDF</button>
+              <button class="btn-action" onclick="copiarPlan()">Copiar texto</button>
+            </div>
+          </div>
+          <div class="result-body" id="plan-texto">${html}</div>
+        </div>`;
+    } catch (e) {
+      document.getElementById('resultado').innerHTML = `
+        <div class="error-card">
+          <strong>Error al generar el plan.</strong> ${e.message || 'Verifica tu conexión e intenta nuevamente.'}
+        </div>`;
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Generar plan de tratamiento';
+    document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copiarPlan() {
+    const txt = document.getElementById('plan-texto')?.innerText || '';
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = event.target;
+      btn.textContent = 'Copiado';
+      setTimeout(() => btn.textContent = 'Copiar texto', 2000);
+    });
+  }
+
+  function imprimirPlan() {
+    window.print();
+  }
+
+  function limpiarFormulario() {
+    document.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+    document.querySelectorAll('.tag.sel').forEach(t => t.classList.remove('sel'));
+    activeScales.clear();
+    document.querySelectorAll('.escala-btn.active').forEach(b => b.classList.remove('active'));
+    document.getElementById('scores-container').innerHTML = '';
+    document.getElementById('resultado').innerHTML = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
